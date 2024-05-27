@@ -9,6 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -47,19 +48,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // Success
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         String token = jwtUtil.createToken(username, role); // 토큰 생성
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token); // Header에 넣기
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("로그인 성공");
     }
 
     // Failure
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-//        response.getWriter().write("로그인 실패");
-        response.setStatus(401);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("로그인 실패");
     }
 
 }

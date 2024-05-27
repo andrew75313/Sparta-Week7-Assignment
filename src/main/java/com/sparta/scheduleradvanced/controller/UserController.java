@@ -6,6 +6,7 @@ import com.sparta.scheduleradvanced.dto.UserInfoDto;
 import com.sparta.scheduleradvanced.entity.UserRoleEnum;
 import com.sparta.scheduleradvanced.security.UserDetailsImpl;
 import com.sparta.scheduleradvanced.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class UserController {
     /*회원가입*/
     @PostMapping("/user/signup")
     @ResponseBody
-    public String signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
+    public String signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult, HttpServletResponse response) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 
@@ -47,31 +48,7 @@ public class UserController {
 
         // Success
         userService.signup(requestDto); // 저장
-        return "Status : " + ResponseEntity.status(HttpStatus.CREATED).toString() +
-                "\n회원가입 완료";
-    }
-
-
-    /*로그인*/
-//    @PostMapping("/user/login")
-//    public String login(LoginRequestDto requestDto) {
-//        try {
-//            userService.login(requestDto);
-//        } catch (Exception e) {
-//            return e.getMessage();
-//        }
-//        return "로그인 성공";
-//    }
-
-
-    // 회원 관련 정보 받기
-    @GetMapping("/user-info")
-    @ResponseBody
-    public UserInfoDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String username = userDetails.getUser().getUsername();
-        UserRoleEnum role = userDetails.getUser().getRole();
-        boolean isAdmin = (role == UserRoleEnum.ADMIN);
-
-        return new UserInfoDto(username, isAdmin);
+        response.setStatus(HttpStatus.CREATED.value());
+        return "회원가입 완료";
     }
 }
