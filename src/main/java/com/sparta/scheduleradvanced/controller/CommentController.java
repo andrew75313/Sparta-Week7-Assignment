@@ -2,8 +2,6 @@ package com.sparta.scheduleradvanced.controller;
 
 import com.sparta.scheduleradvanced.dto.CommentRequestDto;
 import com.sparta.scheduleradvanced.dto.CommentResponseDto;
-import com.sparta.scheduleradvanced.dto.SchedulerRequestDto;
-import com.sparta.scheduleradvanced.dto.SchedulerResponseDto;
 import com.sparta.scheduleradvanced.security.UserDetailsImpl;
 import com.sparta.scheduleradvanced.service.CommentService;
 import jakarta.validation.Valid;

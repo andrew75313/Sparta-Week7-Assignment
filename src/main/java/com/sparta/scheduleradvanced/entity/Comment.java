@@ -1,7 +1,6 @@
 package com.sparta.scheduleradvanced.entity;
 
 import com.sparta.scheduleradvanced.dto.CommentRequestDto;
-import com.sparta.scheduleradvanced.dto.SchedulerRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,10 +1,8 @@
 package com.sparta.scheduleradvanced.service;
 
-import com.sparta.scheduleradvanced.dto.LoginRequestDto;
 import com.sparta.scheduleradvanced.dto.SignupRequestDto;
 import com.sparta.scheduleradvanced.entity.User;
 import com.sparta.scheduleradvanced.entity.UserRoleEnum;
-import com.sparta.scheduleradvanced.jwt.JwtUtil;
 import com.sparta.scheduleradvanced.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

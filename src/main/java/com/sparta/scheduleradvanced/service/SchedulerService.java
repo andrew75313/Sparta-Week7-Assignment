@@ -4,7 +4,6 @@ import com.sparta.scheduleradvanced.dto.SchedulerRequestDto;
 import com.sparta.scheduleradvanced.dto.SchedulerResponseDto;
 import com.sparta.scheduleradvanced.entity.Schedule;
 import com.sparta.scheduleradvanced.entity.User;
-import com.sparta.scheduleradvanced.entity.UserRoleEnum;
 import com.sparta.scheduleradvanced.repository.SchedulerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +20,6 @@ public class SchedulerService {
         this.schedulerRepository = schedulerRepository;
     }
 
-
-    // 일정 등록
-    public SchedulerResponseDto createSchedule(SchedulerRequestDto requestDto, User user) {
-        // RequestDto -> Entity Repository에서 저장
-        Schedule schedule = schedulerRepository.save(new Schedule(requestDto, user));
-        return new SchedulerResponseDto(schedule);
-    }
-
     // USER의 일정 조회
     public List<SchedulerResponseDto> getSchedules() {
         // 모든 일정 조회
@@ -40,6 +31,13 @@ public class SchedulerService {
         }
 
         return responseDtoList;
+    }
+
+    // 일정 등록
+    public SchedulerResponseDto createSchedule(SchedulerRequestDto requestDto, User user) {
+        // RequestDto -> Entity Repository에서 저장
+        Schedule schedule = schedulerRepository.save(new Schedule(requestDto, user));
+        return new SchedulerResponseDto(schedule);
     }
 
     @Transactional
