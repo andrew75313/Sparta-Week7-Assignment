@@ -26,7 +26,6 @@ public class SchedulerService {
     public SchedulerResponseDto createSchedule(SchedulerRequestDto requestDto, User user) {
         // RequestDto -> Entity Repository에서 저장
         Schedule schedule = schedulerRepository.save(new Schedule(requestDto, user));
-        ;
         return new SchedulerResponseDto(schedule);
     }
 
