@@ -66,8 +66,29 @@ public class CommentService {
         if (comment.getUser().getId() != user.getId()) {
             throw new IllegalArgumentException("다른 사용자가 작성한 댓글입니다.");
         }
-
+        // Update
         comment.update(requestDto);
         return new CommentResponseDto(comment);
+    }
+
+    public String deleteCommnet(Long scheduleId, Long commentId, User user) {
+        // 해당 스케쥴 확인
+        Schedule schedule = schedulerRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalArgumentException("해당 일정은 존재하지 않습니다.")
+        );
+
+        // 해당 댓글 확인
+        Comment comment = commentRepository.findByScheduleIdAndId(schedule.getId(), commentId).orElseThrow(
+                () -> new IllegalArgumentException("해당 일정에 댓글은 존재하지 않습니다.")
+        );
+
+        // 작성자와 일치 확인
+        if (comment.getUser().getId() != user.getId()) {
+            throw new IllegalArgumentException("다른 사용자가 작성한 댓글입니다.");
+        }
+
+        // Delete
+        commentRepository.delete(comment);
+        return "댓글이 삭제되었습니다.";
     }
 }

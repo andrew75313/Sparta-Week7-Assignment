@@ -44,4 +44,12 @@ public class CommentController {
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.updateComment(scheduleId, commentId, requestDto, userDetails.getUser());
     }
+
+    /*댓글 삭제*/
+    @DeleteMapping("/schedules/{scheduleId}/comments/{commentId}")
+    public String deleteComment(@PathVariable Long scheduleId,
+                                @PathVariable Long commentId,
+                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.deleteCommnet(scheduleId, commentId, userDetails.getUser());
+    }
 }
