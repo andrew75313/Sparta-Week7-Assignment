@@ -33,7 +33,8 @@ public class UserController {
 
     /*로그인*/
     @PostMapping("/user/login")
-    public String login(LoginRequestDto requestDto, HttpServletResponse response) {
+    @ResponseBody
+    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
         // 로그인 실패 확인
         try {
             userService.login(requestDto, response);

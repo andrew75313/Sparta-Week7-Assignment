@@ -1,7 +1,9 @@
 package com.sparta.scheduleradvanced.jwt;
 
+import com.sparta.scheduleradvanced.entity.User;
 import com.sparta.scheduleradvanced.entity.UserRoleEnum;
 import com.sparta.scheduleradvanced.exception.TokenException;
+import com.sparta.scheduleradvanced.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -29,6 +31,11 @@ public class JwtUtil {
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private final UserRepository userRepository;
+
+    public JwtUtil(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @PostConstruct
     public void init() {
@@ -76,5 +83,20 @@ public class JwtUtil {
     // JWT 사용자 정보 가지고 오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+    // Header에서 가져온 JWT에서 User 반환하기
+    public User getUserFromHeader(HttpServletRequest request){
+        // Header에서 JWT 가지고 오기
+        String token = this.getJwtFromHeader(request);
+        // JWT 검증
+        this.validateToken(token);
+        // Claims에서 유저 Username 가져오기
+        String username = this.getUserInfoFromToken(token).getSubject();
+        // Username에 해당하는 User 찾기
+        User user = userRepository.findByUsername(username).orElseThrow(
+                ()->new TokenException("토큰이 유효하지 않습니다.")
+        );
+        return user;
     }
 }

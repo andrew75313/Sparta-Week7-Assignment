@@ -15,7 +15,6 @@ import java.util.List;
 public class SchedulerService {
 
     private final SchedulerRepository schedulerRepository;
-
     public SchedulerService(SchedulerRepository schedulerRepository) {
         this.schedulerRepository = schedulerRepository;
     }
@@ -69,8 +68,8 @@ public class SchedulerService {
     private Schedule matchScheduleAndUser(Long id, User user) {
         Schedule schedule = findSchedule(id);
 
-        if (schedule.getUser().getId() != user.getId()) {
-            throw new IllegalArgumentException("다른 사용자가 작성한 일정입니다.");
+        if (!schedule.getUser().getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("작성자만 삭제/수정할 수 있습니다.");
         }
         return schedule;
     }

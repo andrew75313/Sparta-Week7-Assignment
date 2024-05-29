@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     }
 
     // TokenException 예외처리
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(TokenException.class)
     public ResponseEntity<ExceptionResponseDto> handleTokenException(TokenException e) {
         ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto();
         exceptionResponseDto.setMessage(e.getMessage());
