@@ -1,12 +1,14 @@
 package com.sparta.scheduleradvanced.jwt;
 
 import com.sparta.scheduleradvanced.entity.UserRoleEnum;
+import com.sparta.scheduleradvanced.exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -34,7 +36,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    // 토큰 생성
+    // JWT 생성
     public String createToken(String username, UserRoleEnum role) {
         Date date = new Date();
 
@@ -57,22 +59,26 @@ public class JwtUtil {
         return null;
     }
 
-    // 토큰 검증
+    // JWT 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+        } catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
+            log.error("토큰이 유효하지 않습니다.");
+            throw new TokenException("토큰이 유효하지 않습니다.");
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT token, 만료된 JWT token 입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
-        } catch (IllegalArgumentException e) {
-            log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            log.error("만료된 토큰 입니다.");
+            throw new TokenException("만료된 토큰 입니다.");
         }
-        return false;
     }
+
+    // JWT 사용자 정보 가지고 오기
+    public Claims getUserInfoFromToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+
+
 
     // 토큰에서 사용자 정보 body 가져오기
     public Claims getUserInfoFromToken(String token) {

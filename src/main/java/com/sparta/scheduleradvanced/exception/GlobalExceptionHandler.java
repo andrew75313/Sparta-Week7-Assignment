@@ -34,5 +34,16 @@ public class GlobalExceptionHandler {
         exceptionResponseDto.setStatusCode(HttpStatus.FORBIDDEN.value()); // HttpStatus Code 403 으로 설정
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponseDto);
     }
+
+    // TokenException 예외처리
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponseDto> handleTokenException(TokenException e) {
+        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto();
+        exceptionResponseDto.setMessage(e.getMessage());
+        exceptionResponseDto.setStatusCode(HttpStatus.BAD_REQUEST.value()); // HttpStatus Code 400 으로 설정
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponseDto);
+    }
+
+
 }
 
