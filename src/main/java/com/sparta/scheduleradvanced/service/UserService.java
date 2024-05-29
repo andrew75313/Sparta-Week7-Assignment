@@ -1,5 +1,6 @@
 package com.sparta.scheduleradvanced.service;
 
+import com.sparta.scheduleradvanced.dto.LoginRequestDto;
 import com.sparta.scheduleradvanced.dto.SignupRequestDto;
 import com.sparta.scheduleradvanced.entity.User;
 import com.sparta.scheduleradvanced.entity.UserRoleEnum;
@@ -15,18 +16,17 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     // 회원가입
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
-        String password = passwordEncoder.encode(requestDto.getPassword());
+        String password = requestDto.getPassword();
 
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
         if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new IllegalArgumentException("중복된 username 입니다.");
         }
 
         // 사용자 ROLE 확인
@@ -42,5 +42,4 @@ public class UserService {
         User user = new User(username, password, requestDto.getNickname(), role);
         userRepository.save(user);
     }
-
 }
