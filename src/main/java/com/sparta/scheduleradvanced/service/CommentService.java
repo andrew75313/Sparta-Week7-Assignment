@@ -59,7 +59,7 @@ public class CommentService {
 
 
     // 댓글 삭제
-    public String deleteCommnet(Long scheduleId, Long commentId, User user) {
+    public String deleteComment(Long scheduleId, Long commentId, User user) {
         // 작성자와 일치 확인
         Comment comment = matchScheduleAndUser(scheduleId, commentId, user);
         // Delete
@@ -87,14 +87,14 @@ public class CommentService {
     private Comment matchScheduleAndUser(Long scheduleId, Long commentId, User user) {
 
         // 해당 일정 확인
-        Schedule schedule = findSchedule(scheduleId);
+        this.findSchedule(scheduleId);
 
         // 해당 댓글 확인
         Comment comment = findComment(commentId);
 
         // 사용자가 작성한 댓글인지 확인
-        if (comment.getUser().getId() != user.getId()) {
-            throw new IllegalArgumentException("다른 사용자가 작성한 댓글입니다.");
+        if (!comment.getUser().getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("작성자만 삭제/수정할 수 있습니다.");
         }
         return comment;
     }

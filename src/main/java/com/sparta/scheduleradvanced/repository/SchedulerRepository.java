@@ -1,7 +1,6 @@
 package com.sparta.scheduleradvanced.repository;
 
 import com.sparta.scheduleradvanced.entity.Schedule;
-import com.sparta.scheduleradvanced.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
