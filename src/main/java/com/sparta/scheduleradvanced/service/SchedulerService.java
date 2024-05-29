@@ -20,10 +20,9 @@ public class SchedulerService {
         this.schedulerRepository = schedulerRepository;
     }
 
-    // USER의 일정 조회
+    // 모든 일정 조회
     public List<SchedulerResponseDto> getSchedules() {
-        // 모든 일정 조회
-        List<Schedule> scheduleList = schedulerRepository.findAll();
+        List<Schedule> scheduleList = schedulerRepository.findAllByOrderByCreatedAtDesc();
         List<SchedulerResponseDto> responseDtoList = new ArrayList<>();
 
         for (Schedule schedule : scheduleList) {
