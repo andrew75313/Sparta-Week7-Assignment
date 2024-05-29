@@ -3,6 +3,7 @@ package com.sparta.scheduleradvanced.exception;
 import com.sparta.scheduleradvanced.dto.ExceptionResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +24,15 @@ public class GlobalExceptionHandler {
         exceptionResponseDto.setMessage(errorMessage.toString());
         exceptionResponseDto.setStatusCode(HttpStatus.BAD_REQUEST.value()); // HttpStatus Code 400 으로 설정
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponseDto);
+    }
+
+    // IllegalArgumentException 예외처리
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponseDto> handleIllegalArgumentException(IllegalArgumentException e) {
+        ExceptionResponseDto exceptionResponseDto = new ExceptionResponseDto();
+        exceptionResponseDto.setMessage(e.getMessage());
+        exceptionResponseDto.setStatusCode(HttpStatus.FORBIDDEN.value()); // HttpStatus Code 403 으로 설정
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exceptionResponseDto);
     }
 }
 
