@@ -1,5 +1,6 @@
 package com.sparta.scheduleradvanced.controller;
 
+import com.sparta.scheduleradvanced.dto.LoginRequestDto;
 import com.sparta.scheduleradvanced.dto.SignupRequestDto;
 import com.sparta.scheduleradvanced.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,5 +29,17 @@ public class UserController {
         userService.signup(requestDto); // 저장
         response.setStatus(HttpStatus.CREATED.value());
         return "회원가입 완료";
+    }
+
+    /*로그인*/
+    @PostMapping("/user/login")
+    public String login(LoginRequestDto requestDto, HttpServletResponse response) {
+        // 로그인 실패 확인
+        try {
+            userService.login(requestDto, response);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("로그인 실패", e);
+        }
+        return "로그인 완료";
     }
 }
