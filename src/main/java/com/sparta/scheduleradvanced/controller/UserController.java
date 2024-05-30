@@ -32,10 +32,10 @@ public class UserController {
     }
 
     /*로그인*/
-    @PostMapping("/user/login")
-    @ResponseBody
-    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
-        userService.login(requestDto, response);
-        return "로그인 완료";
-    }
+//    @PostMapping("/user/login")
+//    @ResponseBody
+//    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
+//        userService.login(requestDto, response);
+//        return "로그인 완료";
+//    }
 }
