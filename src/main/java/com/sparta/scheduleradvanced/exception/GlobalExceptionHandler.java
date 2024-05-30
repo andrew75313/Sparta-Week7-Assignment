@@ -42,7 +42,5 @@ public class GlobalExceptionHandler {
         exceptionResponseDto.setStatusCode(HttpStatus.BAD_REQUEST.value()); // HttpStatus Code 400 으로 설정
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionResponseDto);
     }
-
-
 }
 

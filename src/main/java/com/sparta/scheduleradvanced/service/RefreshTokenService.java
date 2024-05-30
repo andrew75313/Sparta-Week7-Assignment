@@ -5,7 +5,6 @@ import com.sparta.scheduleradvanced.entity.User;
 import com.sparta.scheduleradvanced.exception.TokenException;
 import com.sparta.scheduleradvanced.jwt.JwtUtil;
 import com.sparta.scheduleradvanced.repository.RefreshTokenRepository;
-import com.sparta.scheduleradvanced.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

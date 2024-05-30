@@ -70,7 +70,6 @@ public class JwtUtil {
                 .compact();
     }
 
-
     // Header 에서 JWT - Access Token 가져오기
     public String getAccessTokenFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(ACCESS_TOKEN_HEADER);
@@ -106,7 +105,7 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    // Header에서 가져온 JWT에서 User 찾아서 반환하기
+    // Header에서 가져온 JWT에서 User 찾아서 반환하기 (토큰에 부합한 User일때만 기능 사용을 위함)
     public User getUserFromHeader(HttpServletRequest request) {
         // Header에서 JWT 가지고 오기
         String token = this.getAccessTokenFromHeader(request);
