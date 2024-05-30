@@ -7,6 +7,7 @@ import com.sparta.scheduleradvanced.entity.Schedule;
 import com.sparta.scheduleradvanced.entity.User;
 import com.sparta.scheduleradvanced.repository.CommentRepository;
 import com.sparta.scheduleradvanced.repository.SchedulerRepository;
+import com.sparta.scheduleradvanced.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +20,12 @@ public class CommentService {
     // 일정, 댓글 레포지토리 둘다 주입
     private final CommentRepository commentRepository;
     private final SchedulerRepository schedulerRepository;
+    private final UserRepository userRepository;
 
-    public CommentService(CommentRepository commentRepository, SchedulerRepository schedulerRepository) {
+    public CommentService(CommentRepository commentRepository, SchedulerRepository schedulerRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.schedulerRepository = schedulerRepository;
+        this.userRepository = userRepository;
     }
 
     // 해당 일정 댓글 조회
@@ -42,7 +45,7 @@ public class CommentService {
         // 해당 일정 확인
         Schedule schedule = findSchedule(id);
         // Save
-        Comment comment = commentRepository.save(new Comment(schedule, requestDto, user));
+        Comment comment = commentRepository.save(new Comment(schedule, requestDto, findUser(user.getUsername())));
         return new CommentResponseDto(comment);
     }
 
@@ -50,7 +53,7 @@ public class CommentService {
     // 댓글 수정
     public CommentResponseDto updateComment(Long scheduleId, Long commentId, CommentRequestDto requestDto, User user) {
         // 작성자와 일치 확인
-        Comment comment = matchScheduleAndUser(scheduleId, commentId, user);
+        Comment comment = matchScheduleAndUser(scheduleId, commentId, findUser(user.getUsername()));
         // Update
         comment.update(requestDto);
         return new CommentResponseDto(comment);
@@ -60,7 +63,7 @@ public class CommentService {
     // 댓글 삭제
     public String deleteComment(Long scheduleId, Long commentId, User user) {
         // 작성자와 일치 확인
-        Comment comment = matchScheduleAndUser(scheduleId, commentId, user);
+        Comment comment = matchScheduleAndUser(scheduleId, commentId, findUser(user.getUsername()));
         // Delete
         commentRepository.delete(comment);
         return "댓글이 삭제되었습니다.";
@@ -96,6 +99,15 @@ public class CommentService {
             throw new IllegalArgumentException("작성자만 삭제/수정할 수 있습니다.");
         }
         return comment;
+    }
+
+    /*User DB에 있는 User 가지고오는 메서드*/
+    private User findUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(
+                ()-> new IllegalArgumentException("해당 사용자는 존재하지 않습니다.")
+        );
+
+        return user;
     }
 
 }

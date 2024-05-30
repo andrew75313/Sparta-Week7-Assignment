@@ -26,7 +26,7 @@ public class UserService {
     // 회원가입
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
+        String password = requestDto.getPassword(); // 암호화 없이 저장
 
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
@@ -46,27 +46,5 @@ public class UserService {
         // DB에 사용자 등록
         User user = new User(username, password, requestDto.getNickname(), role);
         userRepository.save(user);
-    }
-
-    // 로그인
-    public void login(LoginRequestDto requestDto, HttpServletResponse response) {
-        String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
-        // username 일치  확인
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("회원을 찾을 수 없습니다.")
-        );
-        // password 일치 확인
-        if (!password.equals(user.getPassword())) {
-            throw new IllegalArgumentException("회원을 찾을 수 없습니다.");
-        }
-        // JWT 생성(발급)
-        String AccessToken = jwtUtil.createAccessToken(user.getUsername(), user.getRole()); // Access Token
-        String RefreshToken = jwtUtil.createRefreshToken(user.getUsername()); // Refresh Token
-        // Refresh Token 저장
-        refreshTokenRepository.save(new RefreshToken(RefreshToken, user));
-        // Header에 Access Token, Refresh Token 추가
-        response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, jwtUtil.addPrefix(AccessToken));
-        response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, jwtUtil.addPrefix(RefreshToken));
     }
 }

@@ -30,12 +30,4 @@ public class UserController {
         response.setStatus(HttpStatus.CREATED.value());
         return "회원가입 완료";
     }
-
-    /*로그인*/
-//    @PostMapping("/user/login")
-//    @ResponseBody
-//    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
-//        userService.login(requestDto, response);
-//        return "로그인 완료";
-//    }
 }

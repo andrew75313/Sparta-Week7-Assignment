@@ -4,9 +4,11 @@ import com.sparta.scheduleradvanced.dto.CommentRequestDto;
 import com.sparta.scheduleradvanced.dto.CommentResponseDto;
 import com.sparta.scheduleradvanced.entity.User;
 import com.sparta.scheduleradvanced.jwt.JwtUtil;
+import com.sparta.scheduleradvanced.security.UserDetailsImpl;
 import com.sparta.scheduleradvanced.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,15 +17,13 @@ import java.util.List;
 @RequestMapping("/api")
 public class CommentController {
     private final CommentService commentService;
-    private final JwtUtil jwtUtil;
 
-    public CommentController(CommentService commentService, JwtUtil jwtUtil) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
-        this.jwtUtil = jwtUtil;
     }
 
 
-    /*댓글 조회(USER)*/
+    /*댓글 조회*/
     @GetMapping("/schedules/{id}/comments")
     public List<CommentResponseDto> getComments(@PathVariable Long id) {
         return commentService.getComments(id);
@@ -33,8 +33,8 @@ public class CommentController {
     @PostMapping("/schedules/{id}/comments")
     public CommentResponseDto createComment(@PathVariable Long id,
                                             @Valid @RequestBody CommentRequestDto requestDto,
-                                            HttpServletRequest request) {
-        User user = jwtUtil.getUserFromHeader(request);
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
         return commentService.createComment(id, requestDto, user);
     }
 
@@ -43,8 +43,8 @@ public class CommentController {
     public CommentResponseDto updateComment(@PathVariable Long scheduleId,
                                             @PathVariable Long commentId,
                                             @Valid @RequestBody CommentRequestDto requestDto,
-                                            HttpServletRequest request) {
-        User user = jwtUtil.getUserFromHeader(request);
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
         return commentService.updateComment(scheduleId, commentId, requestDto, user);
     }
 
@@ -52,8 +52,8 @@ public class CommentController {
     @DeleteMapping("/schedules/{scheduleId}/comments/{commentId}")
     public String deleteComment(@PathVariable Long scheduleId,
                                 @PathVariable Long commentId,
-                                HttpServletRequest request) {
-        User user = jwtUtil.getUserFromHeader(request);
+                                @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
         return commentService.deleteComment(scheduleId, commentId, user);
     }
 }

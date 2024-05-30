@@ -5,6 +5,7 @@ import com.sparta.scheduleradvanced.dto.SchedulerResponseDto;
 import com.sparta.scheduleradvanced.entity.Schedule;
 import com.sparta.scheduleradvanced.entity.User;
 import com.sparta.scheduleradvanced.repository.SchedulerRepository;
+import com.sparta.scheduleradvanced.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +16,11 @@ import java.util.List;
 public class SchedulerService {
 
     private final SchedulerRepository schedulerRepository;
-    public SchedulerService(SchedulerRepository schedulerRepository) {
+    private final UserRepository userRepository;
+
+    public SchedulerService(SchedulerRepository schedulerRepository, UserRepository userRepository) {
         this.schedulerRepository = schedulerRepository;
+        this.userRepository = userRepository;
     }
 
     // 모든 일정 조회
@@ -34,14 +38,14 @@ public class SchedulerService {
     // 일정 등록
     public SchedulerResponseDto createSchedule(SchedulerRequestDto requestDto, User user) {
         // RequestDto -> Entity Repository에서 저장
-        Schedule schedule = schedulerRepository.save(new Schedule(requestDto, user));
+        Schedule schedule = schedulerRepository.save(new Schedule(requestDto, findUser(user.getUsername())));
         return new SchedulerResponseDto(schedule);
     }
 
     @Transactional
     /*일정 수정*/
     public SchedulerResponseDto updateSchedule(Long id, SchedulerRequestDto requestDto, User user) {
-        Schedule schedule = matchScheduleAndUser(id, user);
+        Schedule schedule = matchScheduleAndUser(id, findUser(user.getUsername()));
         // Update
         schedule.update(requestDto);
         return new SchedulerResponseDto(schedule);
@@ -49,7 +53,7 @@ public class SchedulerService {
 
     // 일정 삭제
     public String deleteSchedule(Long schduleId, User user) {
-        Schedule schedule = matchScheduleAndUser(schduleId, user);
+        Schedule schedule = matchScheduleAndUser(schduleId, findUser(user.getUsername()));
         // Delete
         schedulerRepository.delete(schedule);
 
@@ -73,4 +77,14 @@ public class SchedulerService {
         }
         return schedule;
     }
+
+    /*User DB에 있는 User 가지고오는 메서드*/
+    private User findUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(
+                ()-> new IllegalArgumentException("해당 사용자는 존재하지 않습니다.")
+        );
+
+        return user;
+    }
+
 }
