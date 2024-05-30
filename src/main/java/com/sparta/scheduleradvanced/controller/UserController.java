@@ -1,6 +1,5 @@
 package com.sparta.scheduleradvanced.controller;
 
-import com.sparta.scheduleradvanced.dto.LoginRequestDto;
 import com.sparta.scheduleradvanced.dto.SignupRequestDto;
 import com.sparta.scheduleradvanced.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;

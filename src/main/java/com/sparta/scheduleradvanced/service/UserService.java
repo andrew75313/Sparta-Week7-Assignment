@@ -1,14 +1,11 @@
 package com.sparta.scheduleradvanced.service;
 
-import com.sparta.scheduleradvanced.dto.LoginRequestDto;
 import com.sparta.scheduleradvanced.dto.SignupRequestDto;
 import com.sparta.scheduleradvanced.entity.User;
-import com.sparta.scheduleradvanced.entity.RefreshToken;
 import com.sparta.scheduleradvanced.entity.UserRoleEnum;
 import com.sparta.scheduleradvanced.jwt.JwtUtil;
 import com.sparta.scheduleradvanced.repository.RefreshTokenRepository;
 import com.sparta.scheduleradvanced.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

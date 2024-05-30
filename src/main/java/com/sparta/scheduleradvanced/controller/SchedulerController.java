@@ -3,10 +3,8 @@ package com.sparta.scheduleradvanced.controller;
 import com.sparta.scheduleradvanced.dto.SchedulerRequestDto;
 import com.sparta.scheduleradvanced.dto.SchedulerResponseDto;
 import com.sparta.scheduleradvanced.entity.User;
-import com.sparta.scheduleradvanced.jwt.JwtUtil;
 import com.sparta.scheduleradvanced.security.UserDetailsImpl;
 import com.sparta.scheduleradvanced.service.SchedulerService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
