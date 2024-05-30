@@ -27,14 +27,13 @@ public class CommentService {
 
     // 해당 일정 댓글 조회
     public List<CommentResponseDto> getComments(Long id) {
+        // 해당 일정의 모든 댓글 조회
+        List<Comment> commentList = commentRepository.findByScheduleId(id);
 
-        List<Comment> commentList = commentRepository.findAll();
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
-
         for (Comment comment : commentList) {
             responseDtoList.add(new CommentResponseDto(comment));
         }
-
         return responseDtoList;
     }
 

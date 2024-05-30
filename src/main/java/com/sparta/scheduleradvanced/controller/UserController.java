@@ -35,12 +35,7 @@ public class UserController {
     @PostMapping("/user/login")
     @ResponseBody
     public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
-        // 로그인 실패 확인
-        try {
-            userService.login(requestDto, response);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("로그인 실패", e);
-        }
+        userService.login(requestDto, response);
         return "로그인 완료";
     }
 }

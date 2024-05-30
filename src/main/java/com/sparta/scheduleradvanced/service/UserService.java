@@ -3,8 +3,10 @@ package com.sparta.scheduleradvanced.service;
 import com.sparta.scheduleradvanced.dto.LoginRequestDto;
 import com.sparta.scheduleradvanced.dto.SignupRequestDto;
 import com.sparta.scheduleradvanced.entity.User;
+import com.sparta.scheduleradvanced.entity.RefreshToken;
 import com.sparta.scheduleradvanced.entity.UserRoleEnum;
 import com.sparta.scheduleradvanced.jwt.JwtUtil;
+import com.sparta.scheduleradvanced.repository.RefreshTokenRepository;
 import com.sparta.scheduleradvanced.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtil jwtUtil;
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
@@ -49,19 +52,21 @@ public class UserService {
     public void login(LoginRequestDto requestDto, HttpServletResponse response) {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
-
         // username 일치  확인
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException("회원을 찾을 수 없습니다.")
         );
-
         // password 일치 확인
-        if (!password.equals(requestDto.getPassword())) {
+        if (!password.equals(user.getPassword())) {
             throw new IllegalArgumentException("회원을 찾을 수 없습니다.");
         }
-
-        // JWT 생성 및 Header에 추가
-        String token = jwtUtil.createToken(user.getUsername(), user.getRole());
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        // JWT 생성(발급)
+        String AccessToken = jwtUtil.createAccessToken(user.getUsername(), user.getRole()); // Access Token
+        String RefreshToken = jwtUtil.createRefreshToken(user.getUsername()); // Refresh Token
+        // Refresh Token 저장
+        refreshTokenRepository.save(new RefreshToken(RefreshToken, user));
+        // Header에 Access Token, Refresh Token 추가
+        response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, jwtUtil.addPrefix(AccessToken));
+        response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, jwtUtil.addPrefix(RefreshToken));
     }
 }
