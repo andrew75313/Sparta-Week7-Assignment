@@ -39,9 +39,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // 로그인 시도
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
         try {
-            LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
+            LoginRequestDto requestDto = new ObjectMapper().readValue(req.getInputStream(), LoginRequestDto.class);
 
             // AuthenticationManager 인증요청
             return getAuthenticationManager().authenticate(
@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // Success
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
+    protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication authResult) throws IOException {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
@@ -73,27 +73,28 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Refresh Token 저장
         refreshTokenRepository.save(new RefreshToken(RefreshToken, user));
         // Header에 Access Token, Refresh Token 추가
-        response.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, jwtUtil.addPrefix(AccessToken));
-        response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, jwtUtil.addPrefix(RefreshToken));
-        // JSON 형태로 반환
-        ObjectMapper objectMapper = new ObjectMapper();
-        response.setContentType("application/json;charset=UTF-8");
-        String jsonResponse = objectMapper.writeValueAsString(Map.of("status", HttpStatus.OK.value(), "msg", "로그인 성공"));
-
-        response.getWriter().write(jsonResponse);
+        res.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, jwtUtil.addPrefix(AccessToken));
+        res.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, jwtUtil.addPrefix(RefreshToken));
+        // 메시지 응답
+        sendMessage(res, "로그인 성공");
     }
 
     // Failure
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+    protected void unsuccessfulAuthentication(HttpServletRequest req, HttpServletResponse res, AuthenticationException failed) throws IOException {
+        sendMessage(res, "로그인 실패");
+    }
+
+    /*응답 메서드*/
+    private void sendMessage(HttpServletResponse res, String message) throws IOException {
+        res.setStatus(HttpStatus.BAD_REQUEST.value()); // StatusCode 400으로
 
         // JSON 형태로 변환
         ObjectMapper objectMapper = new ObjectMapper();
-        response.setContentType("application/json;charset=UTF-8");
-        String jsonResponse = objectMapper.writeValueAsString(Map.of("status", HttpStatus.UNAUTHORIZED.value(), "msg", "로그인 실패"));
+        res.setContentType("application/json;charset=UTF-8");
+        String jsonResponse = objectMapper.writeValueAsString(Map.of("status", HttpStatus.BAD_REQUEST.value(), "msg", message));
 
-        response.getWriter().write(jsonResponse);
+        res.getWriter().write(jsonResponse);
     }
 
 }
