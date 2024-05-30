@@ -27,7 +27,7 @@ public class Schedule extends Timestamped{
     @JoinColumn(name = "user_id", nullable= false)
     private User user;
     // Comment
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Comment> commentList = new ArrayList<>();
 
     public Schedule(SchedulerRequestDto requestDto, User user) {
