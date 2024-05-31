@@ -36,11 +36,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     // Jwt 가져오기
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
+        String errorMessage = "토큰이 유효하지 않습니다.";
         try {
             // Header에서 JWT 가지고 오기
             String tokenValue = jwtUtil.getAccessTokenFromHeader(req); // Access Token
             if (tokenValue == null) {
                 tokenValue = jwtUtil.getRefreshTokenFromHeader(req); // Refresh Token
+                errorMessage = "재로그인을 시도해주세요.";
             }
 
             if (StringUtils.hasText(tokenValue)) {
@@ -60,7 +62,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(req, res);
         } catch (TokenException e) {
-            sendMessage(res, "토큰이 유효하지 않습니다.");
+            sendMessage(res, errorMessage);
         }
     }
 
