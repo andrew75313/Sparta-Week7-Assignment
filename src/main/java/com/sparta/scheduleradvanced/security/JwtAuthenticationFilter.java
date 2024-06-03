@@ -1,6 +1,7 @@
 package com.sparta.scheduleradvanced.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.scheduleradvanced.config.JwtConfig;
 import com.sparta.scheduleradvanced.dto.LoginRequestDto;
 import com.sparta.scheduleradvanced.entity.RefreshToken;
 import com.sparta.scheduleradvanced.entity.User;
@@ -73,8 +74,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Refresh Token 저장
         refreshTokenRepository.save(new RefreshToken(RefreshToken, user));
         // Header에 Access Token, Refresh Token 추가
-        res.addHeader(JwtUtil.ACCESS_TOKEN_HEADER, jwtUtil.addPrefix(AccessToken));
-        res.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, jwtUtil.addPrefix(RefreshToken));
+        res.addHeader(JwtConfig.ACCESS_TOKEN_HEADER, jwtUtil.addPrefix(AccessToken));
+        res.addHeader(JwtConfig.REFRESH_TOKEN_HEADER, jwtUtil.addPrefix(RefreshToken));
         // 메시지 응답
         sendMessage(res, "로그인 성공");
     }
