@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class SignupRequestDto {
     @NotBlank
     @Size(min=4, max=10, message = "4~10자 사이여야합니다.")

@@ -11,7 +11,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "schedule") // 매핑할 테이블의 이름을 지정
 @NoArgsConstructor
 public class Schedule extends Timestamped{

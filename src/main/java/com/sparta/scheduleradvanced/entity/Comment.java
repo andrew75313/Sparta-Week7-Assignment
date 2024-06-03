@@ -8,7 +8,6 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "comment") // 매핑할 테이블의 이름을 지정
 @NoArgsConstructor
 public class Comment extends Timestamped{
