@@ -1,9 +1,12 @@
-package com.sparta.scheduleradvanced.security;
+package com.sparta.scheduleradvanced.config;
 
 
 import com.sparta.scheduleradvanced.jwt.JwtUtil;
 import com.sparta.scheduleradvanced.repository.RefreshTokenRepository;
 import com.sparta.scheduleradvanced.repository.UserRepository;
+import com.sparta.scheduleradvanced.security.JwtAuthenticationFilter;
+import com.sparta.scheduleradvanced.security.JwtAuthorizationFilter;
+import com.sparta.scheduleradvanced.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
